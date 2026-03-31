@@ -1,6 +1,8 @@
 import os
 import json
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -19,6 +21,11 @@ runner = Runner(agent=code_review_agent, app_name="code-review-agent", session_s
 
 class ReviewRequest(BaseModel):
     code: str = """\ndef calculate_average(numbers):\n    total = 0\n    for i in range(len(numbers)):\n        total += numbers[i]\n    average = total / len(numbers)\n    return average\n"""
+
+
+@app.get("/")
+async def serve_ui():
+    return FileResponse("static/index.html")
 
 
 @app.post("/review", response_model=CodeReview)
@@ -52,6 +59,10 @@ async def review_code(request: ReviewRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Agent Error: {str(e)}")
+
+
+# Serve static files (CSS, JS, etc. if needed later)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 if __name__ == "__main__":

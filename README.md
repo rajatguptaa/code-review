@@ -48,7 +48,7 @@ POST /review  →  ADK Runner  →  Gemini 2.5 Flash  →  Structured JSON revie
 git clone https://github.com/rajatguptaa/code-review.git
 cd code-review
 
-python -m venv venv
+python3 -m venv venv            # Windows: python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 
 pip install -r requirements.txt
@@ -57,7 +57,8 @@ export GOOGLE_API_KEY="your_api_key_here"   # Windows: set GOOGLE_API_KEY=your_a
 python server.py
 ```
 
-Server runs at `http://localhost:8080`
+Server and UI run at `http://localhost:8080`
+Interactive API docs at `http://localhost:8080/docs`
 
 ---
 
@@ -75,6 +76,8 @@ This launches a local web interface at `http://localhost:8000` where you can cha
 
 ## Deploy to Cloud Run
 
+### Option 1: Manual Deployment (gcloud CLI)
+
 ```bash
 gcloud run deploy code-review-agent \
   --source . \
@@ -82,6 +85,14 @@ gcloud run deploy code-review-agent \
   --allow-unauthenticated \
   --set-env-vars="GOOGLE_API_KEY=your_api_key_here"
 ```
+
+### Option 2: CI/CD via GitHub Actions
+
+This repository includes a reusable GitHub Actions workflow for building and deploying to Google Cloud Run automatically on pushes to `main`.
+
+1. Review the configuration at `.github/workflows/deploy-cloud-run.yml`.
+2. Update the environment variables (`PROJECT_ID`, `REGION`, `GAR_LOCATION`, `SERVICE`).
+3. Create a GitHub Secret with your `GCP_CREDENTIALS` (Service Account JSON) or set up Workload Identity Federation as described in the workflow.
 
 ---
 
