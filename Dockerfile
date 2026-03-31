@@ -11,9 +11,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
-# Cloud Run expects the app to listen on the $PORT environment variable
-ENV PORT=8080
-EXPOSE 8080
+# Hugging Face Spaces expects the app to listen on port 7860
+ENV PORT=7860
+EXPOSE 7860
 
 # Run the web server
 CMD ["python", "server.py"]
